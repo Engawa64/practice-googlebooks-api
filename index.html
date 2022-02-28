@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <title>GoogleBook検索</title>
+    <script>
+      $(function () {
+        //-----------------------------------
+        //getJSON[開始]
+        let url = "https://www.googleapis.com/books/v1/volumes?q=";
+
+        $("#readbook").on("click", function () {
+          query = document.getElementById("query").value;
+
+          $.getJSON(url + query, function (data) {
+            console.log(data);
+            let view = ""; //表示する文字列を入れる変数
+            view += "<p>検索：" + query + "</p>";
+            for (var i = 0; i < data.items.length; i++) {
+              let item = data.items[i];
+
+              view += "<ul>";
+              view +=
+                '<img src="' +
+                item.volumeInfo.imageLinks.smallThumbnail +
+                '" />';
+              view += "<li>題名：" + item.volumeInfo.title + "</li>";
+
+              view += "<li>著者:" + item.volumeInfo.authors + "</li>";
+
+              view += "</ul>";
+            }
+
+            if (data.items.length == 0) {
+              alart("お探しの情報が見つかりませんでした。");
+            } else {
+              //変数に入った文字列を表示
+              $("#content").html(view);
+              console.log(
+                "検索：" + query + "\n" + "表示数：" + data.items.length
+              );
+            }
+          });
+          //getJSON[終了]
+          //-----------------------------------
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1 class="header_title">GoogleBooks検索</h1>
+      <p>
+        <input id="query" type="text" value="" />
+        <button id="readbook" class="header_btn">🔍検索</button>
+      </p>
+    </header>
+
+    <main>
+      <p id="content" class="main_txt">
+        キーワードを入れて検索してください。
+        <br />
+        結果がここに表示されます。
+        <br />
+        検索例）和菓子
+      </p>
+    </main>
+    <footer>
+      <p>(c) GoogleBooks検索</p>
+    </footer>
+  </body>
+</html>
